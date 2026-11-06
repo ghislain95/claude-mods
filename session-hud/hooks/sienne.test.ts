@@ -79,6 +79,13 @@ describe('the Terre de Sienne palette', () => {
     expect(svg.match(/style="fill:var\(--accent\)"/g)?.length).toBe(3)
   })
 
+  test('a ribbon can round its top corners to follow the card it heads', () => {
+    const rounded = ribbon(400, { id: 'c', icon: 'commit', title: 'Commit', radius: 10 })
+    expect(rounded).toContain('<clipPath id="s-c-r"><rect width="400" height="46" rx="10"/></clipPath>')
+    expect(rounded).toContain('clip-path="url(#s-c-r)"')
+    expect(ribbon(400, { id: 'c', icon: 'commit', title: 'Commit' })).not.toContain('s-c-r')
+  })
+
   test('ring and bar clamp their fraction', () => {
     expect(ring(1.7)).toEqual(ring(1))
     expect(bar(200, -1)).toEqual(bar(200, 0))

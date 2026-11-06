@@ -197,7 +197,18 @@ export function icon(name: IconName, o: { size?: number; tone?: Tone; draw?: boo
  */
 export function ribbon(
   width: number,
-  o: { id: string; icon: IconName | { badge: string }; title: string; meta?: string; tone?: Tone; waiting?: boolean; done?: boolean; scheme?: Scheme },
+  o: {
+    id: string
+    icon: IconName | { badge: string }
+    title: string
+    meta?: string
+    tone?: Tone
+    waiting?: boolean
+    done?: boolean
+    /** Rounds the top corners, to run parallel to the corners of the card the ribbon heads. */
+    radius?: number
+    scheme?: Scheme
+  },
 ): string {
   const w = Math.max(MIN_WIDTH, Math.round(width))
   const h = 36
@@ -206,6 +217,7 @@ export function ribbon(
   const colour = TONE_VAR[tone]
   const top = tone === 'accent' ? 'var(--accent2)' : colour
   const isWaiting = o.waiting === true
+  const radius = Math.max(0, Math.min(h / 2, o.radius ?? 0))
   const meta = o.meta !== undefined ? escapeXml(fitText(o.meta, w * 0.25, 6)) : ''
   const titleRoom = w - 46 - (o.meta !== undefined ? Math.min(w * 0.25, o.meta.length * 6) + 16 : 0) - (o.done === true ? 24 : 0)
   const title = escapeXml(fitText(o.title, titleRoom, 7.4))
@@ -226,14 +238,16 @@ export function ribbon(
     `<linearGradient id="${id}-g" x1="0" x2="1"><stop offset="0" style="stop-color:${top}" stop-opacity=".5"/><stop offset=".55" style="stop-color:${colour}" stop-opacity=".14"/><stop offset="1" style="stop-color:${colour}" stop-opacity="0"/></linearGradient>` +
     `<linearGradient id="${id}-l" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
     `<radialGradient id="${id}-b" cx=".35" cy=".3"><stop offset="0" style="stop-color:${top}"/><stop offset="1" style="stop-color:${colour}"/></radialGradient>` +
+    (radius > 0 ? `<clipPath id="${id}-r"><rect width="${w}" height="${h + radius}" rx="${radius}"/></clipPath>` : '') +
     `</defs>` +
+    (radius > 0 ? `<g clip-path="url(#${id}-r)">` : '') +
     `<rect width="${w}" height="${h}" fill="url(#${id}-g)"/>${shimmer}` +
     `<rect width="${w}" height="1" style="fill:var(--highlight)"/>` +
     `<rect y="${h - 1}" width="${w}" height="1" style="fill:${colour}" opacity=".45"/>` +
     lead +
     `<text x="36" y="18" dominant-baseline="central" font-family="${FONT}" font-size="12.5" font-weight="650" style="fill:var(--text)">${title}</text>` +
     (meta !== '' ? `<text x="${w - (o.done === true ? 34 : 10)}" y="18" dominant-baseline="central" text-anchor="end" font-family="${FONT}" font-size="10.5" style="fill:var(--mute)">${meta}</text>` : '') +
-    `${check}</svg>`
+    `${check}${radius > 0 ? '</g>' : ''}</svg>`
   )
 }
 

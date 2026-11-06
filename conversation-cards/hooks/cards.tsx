@@ -216,6 +216,9 @@ const BORDER: Record<Tone, string> = {
   danger: NATIVE.danger,
 }
 
+/** The ribbon's top corners take the same curve as the card's own (radius ≈ 10 px, measured on the desktop), the gap between them kept. */
+const RIBBON_RADIUS = 10
+
 /**
  * A card: on a surface that draws Svg, a Terre de Sienne ribbon (icon, title, state) over the body, framed by
  * the accent border; on the terminal, the text header it always had.
@@ -234,7 +237,7 @@ function framed(els: Elements, key: string, context: CardContext, header: Header
   const alt = [header.title, header.meta].filter(part => part !== undefined && part !== '').join(' · ')
   return (
     <Box key={key} flexDirection="column" borderStyle="round" borderColor={BORDER[header.tone ?? 'accent']} overflow="hidden">
-      <Svg key={`${key}-ribbon`} alt={alt} source={ribbon(width, { id: key, ...header })} width={Math.max(240, width)} height={36} isInteractive />
+      <Svg key={`${key}-ribbon`} alt={alt} source={ribbon(width, { id: key, ...header, radius: RIBBON_RADIUS })} width={Math.max(240, width)} height={36} isInteractive />
       <Box flexDirection="column" gap={gap} paddingX="md" paddingY="sm">
         {body}
       </Box>
