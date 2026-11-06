@@ -377,7 +377,7 @@ export function qaPlan(text: string, report: Report | null): QaPlan {
   return { preparation: [], intro: '', checks: qaChecklist(text).map(qaCheck) }
 }
 
-/** A check Claude comes back to after the user's QA answers: « QA 4 (Courtrai) : … », and what it says to do now. */
+/** A check Claude comes back to after the user's QA answers: « QA 4 (recette importée) : … », and what it says to do now. */
 export type QaFollowUp = {
   number: number
   title: string
